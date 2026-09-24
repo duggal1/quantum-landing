@@ -1,6 +1,10 @@
 # Quantum landing
 
-Vite + React landing page for the Quantum macOS browser. Uses Instrument Sans and the supplied light stone design system. The browser preview is an interactive visual demo, not an embedded browser.
+Minimal Vite + React landing page for the [Quantum macOS browser](https://github.com/duggal1/quantum), using the supplied Instrument Sans and stone design system.
+
+- Browser demo: Streamable `6oaunu`, autoplay on, controls hidden.
+- Download: the actual Quantum v0.3.0 Apple Silicon DMG (roughly 150 KB).
+- Brand: the user's Quantum and Apple SVGs.
 
 ```sh
 npm install
@@ -8,6 +12,4 @@ npm run dev
 npm run build
 ```
 
-To activate the macOS DMG download when a real release exists, set `VITE_QUANTUM_DMG_URL` to the release asset URL in Vercel and redeploy. Until then the page says “Coming soon” and does not link to a nonexistent installer.
-
-Vercel: Framework = Vite; Build command = `npm run build`; Output directory = `dist`.
+Vercel: Vite, build command `npm run build`, output directory `dist`. No environment variable needed for the DMG link.
