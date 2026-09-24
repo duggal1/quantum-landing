@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './style.css';
 
 const REPO = 'https://github.com/duggal1/quantum-landing';
@@ -58,12 +58,37 @@ const faq = [
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [expanded, setExpanded] = useState(null);
+  const [scrolled, setScrolled] = useState(false);
+  const [desktopExpanded, setDesktopExpanded] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [menuOpen]);
   return <>
-    <header className="nav-wrap"><nav className="navbar" aria-label="Main navigation"><a className="brand" href="#top" onClick={() => setMenuOpen(false)}><Mark size={23} /> quantum</a><div className={`nav-links ${menuOpen ? 'open' : ''}`}><a href="#preview" onClick={() => setMenuOpen(false)}>Browser</a><a href="#features" onClick={() => setMenuOpen(false)}>Features</a><a href="#faq" onClick={() => setMenuOpen(false)}>FAQ</a></div><a className="nav-cta" href="#download">Get Quantum <Icon name="arrow" size={15}/></a><button className="nav-menu" aria-label="Toggle menu" aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}><Icon name={menuOpen ? 'close' : 'menu'} /></button></nav></header>
+    <header className="nav-wrap">
+      <nav className="navbar" aria-label="Main navigation">
+        <a className="brand" href="#top" onClick={() => setMenuOpen(false)}><Mark size={23} /> quantum</a>
+        <div className={`nav-desktop-shell ${scrolled ? 'compact' : ''} ${desktopExpanded ? 'expanded' : ''}`}>
+          <button className="nav-collapse" type="button" aria-label="Expand navigation" aria-expanded={desktopExpanded} onClick={() => setDesktopExpanded(!desktopExpanded)}><Icon name="menu" size={18}/></button>
+          <div className="nav-links"><a href="#preview">Browser</a><a href="#features">Features</a><a href="#faq">FAQ</a></div>
+          <a className="nav-cta" href="#download">Get Quantum <Icon name="arrow" size={15}/></a>
+        </div>
+        <div className="nav-mobile-actions"><a className="nav-cta" href="#download" onClick={() => setMenuOpen(false)}>Get Quantum <Icon name="arrow" size={15}/></a><button className="nav-menu" aria-label="Toggle menu" aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}><Icon name={menuOpen ? 'close' : 'menu'} /></button></div>
+      </nav>
+      <div className={`nav-mobile-overlay ${menuOpen ? 'open' : ''}`} aria-hidden={!menuOpen}>
+        <div className="mobile-overlay-inner"><div className="mobile-overlay-top"><Mark size={25}/><button type="button" aria-label="Close menu" onClick={() => setMenuOpen(false)}><Icon name="close"/></button></div><div className="mobile-overlay-links"><a href="#preview" onClick={() => setMenuOpen(false)}>Browser</a><a href="#features" onClick={() => setMenuOpen(false)}>Features</a><a href="#faq" onClick={() => setMenuOpen(false)}>FAQ</a><a href="#download" onClick={() => setMenuOpen(false)}>Get Quantum</a></div></div>
+      </div>
+    </header>
     <main id="top"><section className="hero content"><h1>Less browser.<br/><em>More web.</em></h1><p>A lightweight macOS browser that uses the WebKit already on your Mac.</p><div className="hero-actions"><a className="button primary" href="#download"><Apple/> Get Quantum <Icon name="arrow" size={15}/></a><a className="text-button" href="#preview">Explore <Icon name="arrow" size={15}/></a></div></section>
       <section className="showcase" id="preview"><div className="content"><div className="section-top"><h2>Just the web.</h2></div><BrowserPreview/></div></section>
-      <section className="features" id="features"><div className="content"><div className="section-top"><h2>Less, but better.</h2></div><div className="feature-grid">{features.map((item, i) => <article className="feature-card" key={i}><div className="feature-icon">{item.icon}</div><h3>{item.title}</h3></article>)}</div></div></section>
-      <section className="faq" id="faq"><div className="content"><div className="section-top"><h2>Simple answers.</h2></div><div className="faq-items">{faq.map(([q,a],i)=><div className="faq-item" key={q}><button aria-expanded={expanded === i} aria-controls={`faq-${i}`} onClick={() => setExpanded(expanded === i ? null : i)}>{q}<span className={expanded === i ? 'turned' : ''}><Icon name="chevron" size={19}/></span></button>{expanded === i && <p id={`faq-${i}`}>{a}</p>}</div>)}</div></div></section>
+      <section className="feature-cards" id="features"><div className="feature-cards__container"><div className="section-top"><h2>Less, but better.</h2></div><div className="feature-cards__grid">{features.map((item, i) => <article className="feature-card" key={i}><div className="feature-card__icon">{item.icon}</div><div className="feature-card__icon-spacer" aria-hidden="true"/><h3 className="feature-card__heading">{item.title}</h3></article>)}</div></div></section>
+      <section className="faq home-faq" id="faq"><div className="content"><div className="section-top"><h2>Simple answers.</h2></div><div className="faq-items">{faq.map(([q,a],i)=><div className="faq-item" key={q}><button aria-expanded={expanded === i} aria-controls={`faq-${i}`} onClick={() => setExpanded(expanded === i ? null : i)}>{q}<span className={expanded === i ? 'turned' : ''}><Icon name="chevron" size={19}/></span></button>{expanded === i && <p id={`faq-${i}`}>{a}</p>}</div>)}</div></div></section>
       <section className="download" id="download"><div className="content"><h2>Get Quantum.</h2><div className="download-option"><Apple size={20}/><span>macOS</span><span className="download-tag">DMG</span>{DMG ? <a className="button secondary" href={DMG} rel="noopener noreferrer"><Icon name="download" size={16}/> Download</a> : <span className="coming">Coming soon</span>}</div></div></section>
     </main><footer className="footer"><div className="content"><a className="brand" href="#top"><Mark size={20}/> quantum</a><a href={REPO} target="_blank" rel="noopener noreferrer">GitHub <Icon name="arrow" size={14}/></a></div></footer>
   </>;
