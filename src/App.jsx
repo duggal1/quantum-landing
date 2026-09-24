@@ -3,7 +3,7 @@ import './style.css';
 
 const DMG = 'https://github.com/duggal1/quantum/releases/download/v0.3.0/Quantum.dmg';
 const REPO = 'https://github.com/duggal1/quantum';
-const VIDEO = 'https://streamable.com/e/6oaunu?autoplay=1&nocontrols=1';
+const VIDEO = 'https://streamable.com/e/6oaunu?autoplay=1&nocontrols=1&muted=1';
 
 function Mark({ size = 24 }) {
   return <img src="/quantum.svg" width={size * 2 / 3} height={size} alt="" />;
